@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Target Words - Worksheet 13</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            background-color: #f0f4f8; 
+            margin: 0;
+            padding: 2vh 5vw; 
+            min-height: 95vh; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        .container { 
+            width: 100%; 
+            max-width: 1200px; 
+            background: white; 
+            padding: 30px 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            max-height: 100%;
+            overflow-y: auto;
+        }
+        h1 {
+            color: #1a73e8;
+            font-size: 2em;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        /* Framvindustika */
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            height: 20px;
+        }
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #34a853;
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        #counter { font-size: 1.2em; color: #666; font-weight: bold; margin-bottom: 10px; }
+
+        .lang-selector {
+            margin-bottom: 20px;
+            background: #fff3e0;
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: inline-block;
+            border: 1px solid #ffcc80;
+        }
+
+        .lang-selector select {
+            padding: 8px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            margin-left: 10px;
+            max-width: 300px;
+        }
+        
+        #target { 
+            font-size: 4em; 
+            margin: 10px 0; 
+            color: #222; 
+            font-weight: bold;
+        }
+        
+        #is-explanation {
+            font-size: 1.2em;
+            color: #333;
+            background-color: #e8f0fe;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 20px;
+            max-width: 80%;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .btn { 
+            padding: 12px 25px; 
+            font-size: 1.2em; 
+            margin: 5px; 
+            cursor: pointer; 
+            border: none; 
+            border-radius: 8px; 
+            background-color: #1a73e8; 
+            color: white; 
+            transition: 0.3s; 
+            font-weight: bold;
+        }
+        .btn:hover:not(:disabled) { background-color: #1557b0; transform: scale(1.02); }
+        .recording { background-color: #d93025; animation: pulse 1.5s infinite; }
+        .recording:hover { background-color: #b3140b; }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        #media-box { 
+            font-size: 1.1em; 
+            color: #444; 
+            text-align: left; 
+            background: #f8fbff; 
+            padding: 15px 30px; 
+            border-radius: 12px; 
+            line-height: 1.6; 
+            border-left: 6px solid #1a73e8; 
+            margin-top: 15px;
+            display: inline-block;
+            min-width: 70%;
+        }
+        #spoken {
+            margin-top: 15px; 
+            font-size: 1.4em;
+            font-style: italic; 
+            color: #555;
+        }
+        #result {
+            font-weight: bold; 
+            font-size: 1.8em; 
+            margin-top: 5px; 
+            color: #1a73e8;
+        }
+        .nav-btns { margin-top: 20px; }
+        
+        /* Fyrir nafnainnslátt */
+        #studentName {
+            font-size: 1.5em;
+            padding: 10px;
+            margin: 20px 0;
+            width: 80%;
+            max-width: 400px;
+            border: 2px solid #1a73e8;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .feedback-note {
+            margin-top: 40px;
+            font-size: 0.95em;
+            color: #555;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+        .feedback-note a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .feedback-note a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <h1>Target Words - Worksheet 13</h1>
+    
+    <div class="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <div class="lang-selector">
+        <label for="languageSelect"><b>🌍 Tungumál / Translations:</b></label>
+        <select id="languageSelect" onchange="updateUI()">
+            <option value="is" selected>Íslenska – Icelandic</option>
+            <option value="pl">Pólska – Polski</option>
+            <option value="es">Spænska – Español</option>
+        </select>
+    </div>
+
+    <div id="counter"></div>
+    
+    <div id="target"></div>
+    <div id="is-explanation"></div>
+    <br>
+    <button id="record-btn" class="btn" onclick="toggleRecord()">🎤 Tala (Speak)</button>
+    
+    <div id="spoken"></div>
+    <div id="result"></div>
+
+    <div id="media-box"><i>Veldu tungumál úr listanum að ofan til að sjá þýðingu.</i></div>
+
+    <div class="nav-btns">
+        <button class="btn" style="background-color: #5f6368;" onclick="prevExercise()">⬅️ Fyrri</button>
+        <button class="btn" style="background-color: #5f6368;" onclick="nextExercise()">Næsta ➡️</button>
+    </div>
+
+    <div class="feedback-note">
+        Vinsamlegast sendið ábendingar á <a href="mailto:dgu@fb.is">dgu@fb.is</a>
+    </div>
+</div>
+
+<script>
+const exerciseData = [
+    { text: "Future", is_exp: "<b>Íslenska:</b> Framtíð.<br><b>Dæmi:</b> We are going to travel in the <b>future</b>.", translations: { "is": "Framtíð", "pl": "Przyszłość", "es": "Futuro" } },
+    { text: "Plans", is_exp: "<b>Íslenska:</b> Áætlanir / Plön.<br><b>Dæmi:</b> Do you have any <b>plans</b> for the weekend?", translations: { "is": "Áætlanir", "pl": "Plany", "es": "Planes" } },
+    { text: "Arrangements", is_exp: "<b>Íslenska:</b> Fyrirkomulag / Ráðstafanir.<br><b>Dæmi:</b> We made <b>arrangements</b> for the trip.", translations: { "is": "Fyrirkomulag", "pl": "Ustalenia", "es": "Arreglos / Preparativos" } },
+    { text: "Intentions", is_exp: "<b>Íslenska:</b> Áform / Fyrirætlanir.<br><b>Dæmi:</b> Her <b>intentions</b> are good.", translations: { "is": "Áform", "pl": "Zamiary", "es": "Intenciones" } },
+    { text: "Predictions", is_exp: "<b>Íslenska:</b> Spár.<br><b>Dæmi:</b> He makes <b>predictions</b> about the weather.", translations: { "is": "Spár", "pl": "Przewidywania", "es": "Predicciones" } },
+    { text: "Tomorrow", is_exp: "<b>Íslenska:</b> Á morgun.<br><b>Dæmi:</b> I am playing tennis <b>tomorrow</b>.", translations: { "is": "Á morgun", "pl": "Jutro", "es": "Mañana" } },
+    { text: "Tonight", is_exp: "<b>Íslenska:</b> Í kvöld.<br><b>Dæmi:</b> Are you going out <b>tonight</b>?", translations: { "is": "Í kvöld", "pl": "Dziś wieczorem", "es": "Esta noche" } },
+    { text: "Weekend", is_exp: "<b>Íslenska:</b> Helgi.<br><b>Dæmi:</b> Have a great <b>weekend</b>!", translations: { "is": "Helgi", "pl": "Weekend", "es": "Fin de semana" } },
+    { text: "Afternoon", is_exp: "<b>Íslenska:</b> Eftirmiðdagur.<br><b>Dæmi:</b> Let's meet in the <b>afternoon</b>.", translations: { "is": "Eftirmiðdagur", "pl": "Popołudnie", "es": "Tarde" } },
+    { text: "Grammar", is_exp: "<b>Íslenska:</b> Málfræði.<br><b>Dæmi:</b> English <b>grammar</b> can be tricky.", translations: { "is": "Málfræði", "pl": "Gramatyka", "es": "Gramática" } },
+    { text: "Listening", is_exp: "<b>Íslenska:</b> Hlustun.<br><b>Dæmi:</b> We did a <b>listening</b> exercise in class.", translations: { "is": "Hlustun", "pl": "Słuchanie", "es": "Escucha / Comprensión auditiva" } },
+    { text: "Comprehension", is_exp: "<b>Íslenska:</b> Skilningur.<br><b>Dæmi:</b> Reading <b>comprehension</b> is important.", translations: { "is": "Skilningur", "pl": "Rozumienie", "es": "Comprensión" } },
+    { text: "Reading", is_exp: "<b>Íslenska:</b> Lestur.<br><b>Dæmi:</b> <b>Reading</b> books helps you learn.", translations: { "is": "Lestur", "pl": "Czytanie", "es": "Lectura" } },
+    { text: "Statement", is_exp: "<b>Íslenska:</b> Fullyrðing / Yfirlýsing.<br><b>Dæmi:</b> Is this <b>statement</b> true or false?", translations: { "is": "Fullyrðing", "pl": "Oświadczenie / Twierdzenie", "es": "Declaración / Afirmación" } },
+    { text: "True", is_exp: "<b>Íslenska:</b> Satt / Rétt.<br><b>Dæmi:</b> The story is completely <b>true</b>.", translations: { "is": "Satt", "pl": "Prawda", "es": "Verdadero" } },
+    { text: "False", is_exp: "<b>Íslenska:</b> Ósatt / Rangt.<br><b>Dæmi:</b> That information is <b>false</b>.", translations: { "is": "Ósatt", "pl": "Fałsz", "es": "Falso" } },
+    { text: "Library", is_exp: "<b>Íslenska:</b> Bókasafn.<br><b>Dæmi:</b> We are meeting at the <b>library</b>.", translations: { "is": "Bókasafn", "pl": "Biblioteka", "es": "Biblioteca" } },
+    { text: "Project", is_exp: "<b>Íslenska:</b> Verkefni.<br><b>Dæmi:</b> We are working on a history <b>project</b>.", translations: { "is": "Verkefni", "pl": "Projekt", "es": "Proyecto" } },
+    { text: "Match", is_exp: "<b>Íslenska:</b> Leikur / Viðureign.<br><b>Dæmi:</b> It is an important basketball <b>match</b>.", translations: { "is": "Leikur", "pl": "Mecz", "es": "Partido" } },
+    { text: "Party", is_exp: "<b>Íslenska:</b> Partý / Veisla.<br><b>Dæmi:</b> My school is having a big <b>party</b>.", translations: { "is": "Partý", "pl": "Impreza", "es": "Fiesta" } },
+    { text: "Clouds", is_exp: "<b>Íslenska:</b> Ský.<br><b>Dæmi:</b> Look at those dark <b>clouds</b>!", translations: { "is": "Ský", "pl": "Chmury", "es": "Nubes" } },
+    { text: "Rain", is_exp: "<b>Íslenska:</b> Rigning / Að rigna.<br><b>Dæmi:</b> It is going to <b>rain</b> soon.", translations: { "is": "Rigning", "pl": "Deszcz", "es": "Lluvia" } },
+    { text: "Homework", is_exp: "<b>Íslenska:</b> Heimanám / Heimavinna.<br><b>Dæmi:</b> I need to finish my <b>homework</b>.", translations: { "is": "Heimavinna", "pl": "Praca domowa", "es": "Tarea" } },
+    { text: "Mountains", is_exp: "<b>Íslenska:</b> Fjöll.<br><b>Dæmi:</b> We are taking the bus to the <b>mountains</b>.", translations: { "is": "Fjöll", "pl": "Góry", "es": "Montañas" } },
+    { text: "Cabin", is_exp: "<b>Íslenska:</b> Sumarbústaður / Koti.<br><b>Dæmi:</b> They spend the weekend at a <b>cabin</b>.", translations: { "is": "Sumarbústaður", "pl": "Domek letniskowy / chata", "es": "Cabaña" } },
+    { text: "Weather", is_exp: "<b>Íslenska:</b> Veður.<br><b>Dæmi:</b> The <b>weather</b> is going to be cold.", translations: { "is": "Veður", "pl": "Pogoda", "es": "Clima / Tiempo" } },
+    { text: "Freezing", is_exp: "<b>Íslenska:</b> Frost / Ískalt.<br><b>Dæmi:</b> It is going to be <b>freezing</b> up there!", translations: { "is": "Ískalt", "pl": "Mroźnie", "es": "Helado / Congelado" } },
+    { text: "Waterfall", is_exp: "<b>Íslenska:</b> Foss.<br><b>Dæmi:</b> We are hiking to the big <b>waterfall</b>.", translations: { "is": "Foss", "pl": "Wodospad", "es": "Cascada" } },
+    { text: "Adventure", is_exp: "<b>Íslenska:</b> Ævintýri.<br><b>Dæmi:</b> I think it is going to be a great <b>adventure</b>.", translations: { "is": "Ævintýri", "pl": "Przygoda", "es": "Aventura" } },
+    { text: "Fireplace", is_exp: "<b>Íslenska:</b> Arinn.<br><b>Dæmi:</b> We are going to relax by the <b>fireplace</b>.", translations: { "is": "Arinn", "pl": "Kominek", "es": "Chimenea" } }
+];
+
+let userScores = new Array(exerciseData.length).fill(null);
+let userSpoken = new Array(exerciseData.length).fill("");
+
+let currentIndex = 0;
+let recognition;
+let isRecording = false;
+let autoAdvanceTimer = null;
+let hasDownloadedCert = false;
+
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    // Breytt yfir í enska talgreiningu!
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    
+    recognition.onend = () => {
+        isRecording = false;
+        const btn = document.getElementById('record-btn');
+        if (btn) {
+            btn.innerText = "🎤 Tala (Speak)";
+            btn.classList.remove('recording');
+        }
+        
+        const resDiv = document.getElementById('result');
+        if (resDiv && resDiv.innerText === "Hlusta...") {
+            resDiv.innerText = "";
+        }
+    };
+} else {
+    alert("Þessi vafri styður ekki talgreiningu. Notaðu Chrome eða Edge á tölvu.");
+}
+
+window.onload = () => { 
+    updateUI(); 
+};
+
+function updateProgress() {
+    let correctCount = 0;
+    for (let i = 0; i < userScores.length; i++) {
+        if (userScores[i] === 100) {
+            correctCount++;
+        }
+    }
+    const percent = (correctCount / exerciseData.length) * 100;
+    
+    const progressBar = document.getElementById('progress-bar');
+    if(progressBar) {
+        progressBar.style.width = percent + '%';
+    }
+    return correctCount;
+}
+
+function findNextUnfinished() {
+    for (let i = 0; i < userScores.length; i++) {
+        if (userScores[i] !== 100) {
+            currentIndex = i;
+            break;
+        }
+    }
+    
+    document.getElementById('app').innerHTML = `
+        <h1>Target Words - Worksheet 13</h1>
+        <div class="progress-container"><div id="progress-bar"></div></div>
+        
+        <div class="lang-selector">
+            <label for="languageSelect"><b>🌍 Tungumál / Translations:</b></label>
+            <select id="languageSelect" onchange="updateUI()">
+                <option value="is" selected>Íslenska – Icelandic</option>
+                <option value="pl">Pólska – Polski</option>
+                <option value="es">Spænska – Español</option>
+            </select>
+        </div>
+
+        <div id="counter"></div>
+        <div id="target"></div>
+        <div id="is-explanation"></div>
+        <br>
+        <button id="record-btn" class="btn" onclick="toggleRecord()">🎤 Tala (Speak)</button>
+        <div id="spoken"></div>
+        <div id="result"></div>
+        <div id="media-box"></div>
+        <div class="nav-btns">
+            <button class="btn" style="background-color: #5f6368;" onclick="prevExercise()">⬅️ Fyrri</button>
+            <button class="btn" style="background-color: #5f6368;" onclick="nextExercise()">Næsta ➡️</button>
+        </div>
+        <div class="feedback-note">
+            Vinsamlegast sendið ábendingar á <a href="mailto:dgu@fb.is">dgu@fb.is</a>
+        </div>
+    `;
+    updateUI();
+}
+
+function updateUI() {
+    clearTimeout(autoAdvanceTimer); 
+    const correctCount = updateProgress();
+
+    if (currentIndex >= exerciseData.length) {
+        if (correctCount === exerciseData.length) {
+            document.getElementById('app').innerHTML = `
+                <div class="progress-container"><div id="progress-bar" style="width: 100%;"></div></div>
+                <h1 style="color: #34a853; font-size: 2.5em;">Frábært! Þú náðir 100% árangri! 🎉</h1>
+                <p style="font-size: 1.2em; color: #555;">Skrifaðu nafnið þitt hér að neðan til að sækja viðurkenningarskjalið þitt.</p>
+                <input type="text" id="studentName" placeholder="Skrifaðu nafnið þitt hér" autocomplete="off" ${hasDownloadedCert ? 'disabled' : ''}><br>
+                <button id="cert-btn" class="btn" style="background-color: ${hasDownloadedCert ? '#5f6368' : '#1a73e8'}; font-size: 1.5em; padding: 15px 30px; margin-top: 10px; cursor: ${hasDownloadedCert ? 'not-allowed' : 'pointer'}; opacity: ${hasDownloadedCert ? '0.7' : '1'};" onclick="downloadCert()" ${hasDownloadedCert ? 'disabled' : ''}>
+                    ${hasDownloadedCert ? '✅ Skjal sótt' : '🏆 Sækja viðurkenningarskjal'}
+                </button>
+                <br><br>
+                <button class="btn" style="background-color: #5f6368;" onclick="location.reload()">🔄 Byrja nýja umferð</button>
+                <div class="feedback-note">
+                    Vinsamlegast sendið ábendingar á <a href="mailto:dgu@fb.is">dgu@fb.is</a>
+                </div>
+            `;
+        } else {
+            document.getElementById('app').innerHTML = `
+                <div class="progress-container"><div id="progress-bar" style="width: ${(correctCount/exerciseData.length)*100}%;"></div></div>
+                <h1 style="color: #fbbc05; font-size: 2em;">Þú ert næstum því búin(n)!</h1>
+                <p style="font-size: 1.2em;">Þú hefur klárað ${correctCount} af${exerciseData.length} orðum með 100% árangri.</p>
+                <p style="font-size: 1.1em; color: #555;">Farðu til baka og reyndu aftur við þau orð sem vantaði upp á til að fá skjalið.</p>
+                <button class="btn" style="background-color: #fbbc05; color: #000;" onclick="findNextUnfinished()">➡️ Fara á orð sem vantar</button>
+                <div class="feedback-note">
+                    Vinsamlegast sendið ábendingar á <a href="mailto:dgu@fb.is">dgu@fb.is</a>
+                </div>
+            `;
+        }
+        return;
+    }
+
+    const curr = exerciseData[currentIndex];
+    
+    const langSelect = document.getElementById('languageSelect');
+    const selectedLang = langSelect ? langSelect.value : 'is';
+
+    document.getElementById('target').innerHTML = curr.text;
+    document.getElementById('is-explanation').innerHTML = curr.is_exp;
+    document.getElementById('counter').innerText = `Word ${currentIndex + 1} of${exerciseData.length}`;
+    
+    if (!selectedLang) {
+        document.getElementById('media-box').innerHTML = "<i>Veldu tungumál úr listanum að ofan til að sjá þýðingu.</i>";
+    } else {
+        document.getElementById('media-box').innerHTML = "<b>Þýðing / Translation:</b> " + (curr.translations[selectedLang] || "Þýðing ekki til");
+    }
+
+    const savedScore = userScores[currentIndex];
+    const savedText = userSpoken[currentIndex];
+
+    if (savedScore !== null) {
+        document.getElementById('result').innerText = `Einkunn (Score): ${savedScore}%`;
+        document.getElementById('spoken').innerText = `Þú sagðir (You said): "${savedText}"`;
+    } else {
+        document.getElementById('result').innerText = "";
+        document.getElementById('spoken').innerText = "";
+    }
+}
+
+function nextExercise() {
+    currentIndex++;
+    updateUI();
+}
+
+function prevExercise() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        updateUI();
+    }
+}
+
+function toggleRecord() {
+    if (!recognition) return;
+
+    const btn = document.getElementById('record-btn');
+    if (isRecording) {
+        recognition.stop();
+    } else {
+        try {
+            recognition.start();
+            isRecording = true;
+            btn.innerText = "🛑 Hlusta...";
+            btn.classList.add('recording');
+            document.getElementById('result').innerText = "Hlusta...";
+            document.getElementById('spoken').innerText = "";
+        } catch(e) {
+            console.log("Villa í upptöku: " + e);
+        }
+    }
+}
+
+if (recognition) {
+    recognition.onresult = (event) => {
+        let spoken = event.results[0][0].transcript;
+        spoken = spoken.trim().toLowerCase(); 
+
+        document.getElementById('spoken').innerText = `Þú sagðir: "${spoken}"`;
+        
+        const targetWord = exerciseData[currentIndex].text.toLowerCase();
+        
+        let score = (spoken === targetWord) ? 100 : 0;
+        
+        if (spoken.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"").trim() === targetWord) {
+            score = 100;
+        }
+        
+        document.getElementById('result').innerText = `Einkunn: ${score}%`;
+
+        userScores[currentIndex] = score;
+        userSpoken[currentIndex] = spoken;
+        
+        updateProgress();
+
+        if (score === 100) {
+            autoAdvanceTimer = setTimeout(() => {
+                nextExercise();
+            }, 1000); 
+        }
+    };
+}
+
+function downloadCert() {
+    if (hasDownloadedCert) return; 
+
+    const studentNameInput = document.getElementById('studentName');
+    const studentName = studentNameInput ? studentNameInput.value.trim() : "";
+    
+    if (studentName === "") {
+        alert("Vinsamlegast skrifaðu nafnið þitt fyrst!");
+        return;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 900;
+    canvas.height = 600;
+    const ctx = canvas.getContext('2d');
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.strokeStyle = '#1a73e8';
+    ctx.lineWidth = 15;
+    ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+    ctx.strokeStyle = '#fbbc05';
+    ctx.lineWidth = 5;
+    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+    
+    ctx.fillStyle = '#1a73e8';
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 50px Arial';
+    ctx.fillText('Certificate of Completion', canvas.width / 2, 140);
+    
+    ctx.fillStyle = '#333333';
+    ctx.font = '24px Arial';
+    ctx.fillText('Þetta skjal staðfestir að / This certifies that', canvas.width / 2, 220);
+    
+    ctx.fillStyle = '#000000';
+    ctx.font = 'bold 45px Arial';
+    ctx.fillText(studentName, canvas.width / 2, 290);
+    
+    ctx.fillStyle = '#333333';
+    ctx.font = '24px Arial';
+    ctx.fillText('hefur lokið framburðaræfingunni fyrir:', canvas.width / 2, 360);
+
+    ctx.fillStyle = '#1a73e8';
+    ctx.font = 'bold 26px Arial';
+    ctx.fillText('Target Words - Worksheet 13', canvas.width / 2, 420);
+    
+    ctx.fillStyle = '#34a853';
+    ctx.font = 'italic 28px Arial';
+    ctx.fillText('Frábær árangur! Excellent work!', canvas.width / 2, 490);
+
+    const dateString = new Date().toLocaleDateString('is-IS');
+    ctx.fillStyle = '#666666';
+    ctx.font = '18px Arial';
+    ctx.fillText('Dagsetning: ' + dateString, canvas.width / 2, 540);
+    
+    const link = document.createElement('a');
+    link.download = `Vidurkenning_Worksheet13_${studentName.replace(/\s+/g, '_')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    
+    hasDownloadedCert = true;
+    const btn = document.getElementById('cert-btn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerText = "✅ Skjal sótt";
+        btn.style.backgroundColor = "#5f6368";
+        btn.style.cursor = "not-allowed";
+        btn.style.opacity = "0.7";
+    }
+    if (studentNameInput) {
+        studentNameInput.disabled = true;
+    }
+}
+</script>
+
+</body>
+</html>
